@@ -6,7 +6,7 @@ on:
     types: [ opened, synchronize, reopened, ready_for_review ]
   
 env:
-  CSPROJ_LOCATION: "[./src/...].sln" # Path to the .csproj file
+  SLN_LOCATION: "[./src/...].sln" # Path to the solution file
   ROOT_FOLDER: "./src" # Root folder of the project
 jobs:
   analyze:
@@ -38,9 +38,9 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     - name: nuget restore
-      run: nuget restore ${{ env.CSPROJ_LOCATION }}
+      run: nuget restore ${{ env.SLN_LOCATION }}
     - name: Install dependencies
-      run: dotnet restore ${{ env.CSPROJ_LOCATION }} 
+      run: dotnet restore ${{ env.SLN_LOCATION }} 
     
     - name: Build .csproj files
       run: |
