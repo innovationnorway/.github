@@ -34,7 +34,7 @@ jobs:
     - name: Auth NuGet
       run: dotnet nuget update source 'IN Github' --source "https://nuget.pkg.github.com/innovationnorway/index.json" --username innovationnorway --password ${{ secrets.GITHUB_TOKEN }} --configfile ./src/nuget.config --store-password-in-clear-text
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     - name: nuget restore
