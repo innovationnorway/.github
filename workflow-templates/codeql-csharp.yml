@@ -1,0 +1,55 @@
+name: "CodeQL"
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  
+  env:
+    CSPROJ_LOCATION: "[./src/...].sln" # Path to the .csproj file
+    ROOT_FOLDER: "./src" # Root folder of the project
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    if: github.event.pull_request.draft == false
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+    - name: Auth NuGet
+      run: dotnet nuget update source 'IN Github' --source "https://nuget.pkg.github.com/innovationnorway/index.json" --username innovationnorway --password ${{ secrets.GITHUB_TOKEN }} --configfile ./src/nuget.config --store-password-in-clear-text
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    - name: nuget restore
+      run: nuget restore ${{ env.CSPROJ_LOCATION }}
+    - name: Install dependencies
+      run: dotnet restore ${{ env.CSPROJ_LOCATION }} 
+    
+    - name: Build .csproj files
+      run: |
+        cd ${{ env.ROOT_FOLDER }} 
+        for file in $(find . -name '*.csproj'); do
+          dotnet build "$file" --configuration Release
+        done
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"

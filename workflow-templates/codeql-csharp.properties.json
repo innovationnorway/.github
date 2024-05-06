@@ -1,0 +1,8 @@
+{
+    "name": "Code scanning - csharp",
+    "description": "Code scanning for csharp projects.",
+    "iconName": "eocticon codescan",
+    "categories": [
+        "csharp"
+    ]
+}
