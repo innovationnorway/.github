@@ -1,10 +1,21 @@
 name: "CodeQL"
+# This section enables scan on push and pr againts develop. draft prs are excluded. Only runs on changes to src folder
+#on:
+#  push:
+#    branches: [ "develop" ]
+#    paths:
+#      - 'src/**'
+#  pull_request:
+#    branches: [ "develop" ]
+#    types: [ opened, synchronize, reopened, ready_for_review ]
+#    paths:
+#      - 'src/**'
 
-on:
-  pull_request:
-    branches: [ "develop" ]
-    types: [ opened, synchronize, reopened, ready_for_review ]
-  
+# This section enables periodic scanning on default (develop) branch at 5AM UTC every sunday. https://crontab.guru/ 
+#on:
+#  schedule:
+#    cron: 0 5 * * sun
+
 env:
   SLN_LOCATION: "[./src/...].sln" # Path to the solution file
   ROOT_FOLDER: "./src" # Root folder of the project
